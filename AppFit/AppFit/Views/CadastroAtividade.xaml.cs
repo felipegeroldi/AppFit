@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using AppFit.ViewModels;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,6 +11,18 @@ namespace AppFit.Views
         public CadastroAtividade()
         {
             InitializeComponent();
+
+            BindingContext = new CadastroAtividadeViewModel();
+        }
+
+        protected override void OnAppearing()
+        {
+            var viewModel = BindingContext as CadastroAtividadeViewModel;
+
+            if(viewModel.Id == 0)
+            {
+                viewModel.Data = DateTime.Now;
+            }
         }
     }
 }
