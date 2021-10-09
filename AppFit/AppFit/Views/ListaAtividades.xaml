@@ -1,12 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AppFit.Views.ListaAtividades">
+             x:Class="AppFit.Views.ListaAtividades"
+             x:Name="Pagina">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Text="Atualizar"
+            IconImageSource="refresh24"
+            Order="Primary"
+            Command="{Binding AtualizarLista}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Padding="15">
+            <StackLayout>
+                <SearchBar
+                    Text="{Binding ParametroBusca}"
+                    Placeholder="Busque por Descrição"/>
+                <Button 
+                    Command="{Binding Buscar}"
+                    Text="Buscar"/>
+            </StackLayout>
+            
+            <RefreshView
+                IsRefreshing="{Binding EstaAtualizando, Mode=OneWay}"
+                Command="{Binding AtualizarLista}">
+                <ListView ItemsSource="{Binding ListaAtividades}">
+                    <ListView.Header>
+                        <Grid
+                            RowDefinitions="Auto"
+                            ColumnDefinitions="*,*,*">
+                            <Label
+                                Text="Id"
+                                Grid.Row="0"
+                                Grid.Column="0"/>
+
+                            <Label
+                                Text="Descrição"
+                                Grid.Row="0"
+                                Grid.Column="1"/>
+
+                            <Label
+                                Text="Data"
+                                Grid.Row="0"
+                                Grid.Column="2"/>
+                        </Grid>
+                    </ListView.Header>
+                    
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.ContextActions>
+                                    <MenuItem Text="Detalhes"
+                                        Command="{Binding Source={x:Reference Pagina}, Path=BindingContext.ExibirAtividade }"
+                                        CommandParameter="{Binding Id}"/>
+                                    <MenuItem Text="Excluir"
+                                        Command="{Binding Source={x:Reference Pagina}, Path=BindingContext.RemoverAtividade }"
+                                        CommandParameter="{Binding Id}"/>
+                                </ViewCell.ContextActions>
+                                
+                                <Grid
+                                    RowDefinitions="Auto"
+                                    ColumnDefinitions="*,*,*">
+                                    <Label
+                                        Text="{Binding Id}"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+
+                                    <Label
+                                        Text="{Binding Descricao}"
+                                        Grid.Row="0"
+                                        Grid.Column="1"/>
+
+                                    <Label
+                                        Text="{Binding Data, StringFormat='{}{0:dd/MM/yyyy}'}"
+                                        Grid.Row="0"
+                                        Grid.Column="2"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </RefreshView>
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

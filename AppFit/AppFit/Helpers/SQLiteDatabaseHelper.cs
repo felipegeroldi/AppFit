@@ -40,10 +40,10 @@ namespace AppFit.Helpers
             return _connection.UpdateAsync(model);
         }
 
-        public Task<int> Delete(Atividade model)
+        public Task<int> Delete(int id)
         {
             return _connection.Table<Atividade>()
-                .DeleteAsync(item => item.Id == model.Id);
+                .DeleteAsync(item => item.Id == id);
         }
 
         public Task<List<Atividade>> Search(string query)

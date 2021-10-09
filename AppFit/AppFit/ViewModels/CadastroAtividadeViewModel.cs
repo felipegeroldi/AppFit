@@ -7,6 +7,7 @@ using Xamarin.Forms;
 
 namespace AppFit.ViewModels
 {
+    [QueryProperty("AtividadeId", "AtividadeId")]
     class CadastroAtividadeViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -16,6 +17,15 @@ namespace AppFit.ViewModels
         string _observacoes;
         DateTime _data;
         double? _peso;
+
+        public string AtividadeId {
+            set 
+            {
+                int.TryParse(value, out int id);
+
+                CarregarAtividade.Execute(id);
+            }
+        }
 
         public int Id
         {
@@ -74,6 +84,30 @@ namespace AppFit.ViewModels
             });
         }
 
+        public ICommand CarregarAtividade
+        {
+            get => new Command<int>(async (int id) =>
+            {
+                try
+                {
+                    var atividade = await App.Database.GetById(id);
+
+                    if(atividade != null)
+                    {
+                        Id = atividade.Id;
+                        Descricao = atividade.Descricao;
+                        Data = atividade.Data;
+                        Peso = atividade.Peso;
+                        Observacoes = atividade.Observacoes;
+                    }
+                }
+                catch (Exception)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Erro", "Não foi possivel carregar as atividades cadastradas", "Ok");
+                }
+            });
+        }
+
         public ICommand SalvarAtividade
         {
             get => new Command(async () =>
@@ -92,13 +126,14 @@ namespace AppFit.ViewModels
                     if(model.Id == 0)
                     {
                         await App.Database.Insert(model);
+                        await Application.Current.MainPage.DisplayAlert("Sucesso!", "A atividade foi cadastrada", "Ok");
                     }
                     else
                     {
                         await App.Database.Update(model);
+                        await Application.Current.MainPage.DisplayAlert("Sucesso!", "A atividade foi atualizada", "Ok");
                     }
 
-                    await Application.Current.MainPage.DisplayAlert("Sucesso!", "A atividade foi cadastrada", "Ok");
                     await Shell.Current.GoToAsync("//MinhasAtividades");
                 }
                 catch (Exception)

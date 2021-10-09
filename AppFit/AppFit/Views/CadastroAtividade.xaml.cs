@@ -17,6 +17,8 @@ namespace AppFit.Views
 
         protected override void OnAppearing()
         {
+            base.OnAppearing();
+
             var viewModel = BindingContext as CadastroAtividadeViewModel;
 
             if(viewModel.Id == 0)
